@@ -587,7 +587,7 @@ class CollectionTest extends TestCase
     {
         $data = array(1, 2, 3, 4);
         $collection = new Collection($data);
-        $collection->sample(2);
+        $collection = $collection->sample(2);
         $this->assertCount(2, iterator_to_array($collection));
 
         foreach ($collection as $value) {
@@ -807,7 +807,8 @@ class CollectionTest extends TestCase
     public function testBuffered()
     {
         $items = new NoRewindIterator(new ArrayIterator(array('a' => 4, 'b' => 5, 'c' => 6)));
-        $buffered = (new Collection($items))->buffered();
+        $collection = new Collection($items);
+        $buffered = $collection->buffered();
         $this->assertEquals(array('a' => 4, 'b' => 5, 'c' => 6), $buffered->toArray());
         $this->assertEquals(array('a' => 4, 'b' => 5, 'c' => 6), $buffered->toArray());
     }
@@ -877,7 +878,8 @@ class CollectionTest extends TestCase
             array('id' => 9, 'parent_id' => 6),
             array('id' => 10, 'parent_id' => 6)
         );
-        $collection = (new Collection($items))->nest('id', 'parent_id');
+        $collection = new Collection($items);
+        $collection = $collection->nest('id', 'parent_id');
         $expected = array(
             array(
                 'id' => 1,
@@ -922,7 +924,8 @@ class CollectionTest extends TestCase
             array('id' => 9, 'parent_id' => 6),
             array('id' => 10, 'parent_id' => 6)
         );
-        $collection = (new Collection($items))->nest('id', 'parent_id', 'nodes');
+        $collection = new Collection($items);
+        $collection = $collection->nest('id', 'parent_id', 'nodes');
         $expected = array(
             array(
                 'id' => 1,
@@ -967,7 +970,8 @@ class CollectionTest extends TestCase
             array('id' => 9, 'parent_id' => 6),
             array('id' => 10, 'parent_id' => 6)
         );
-        $collection = (new Collection($items))->nest('id', 'parent_id', 'nodes');
+        $collection = new Collection($items);
+        $collection = $collection->nest('id', 'parent_id', 'nodes');
         $expected = array(
             array(
                 'id' => 1,
@@ -1027,7 +1031,8 @@ class CollectionTest extends TestCase
             array('id' => 9, 'parent_id' => 6),
             array('id' => 10, 'parent_id' => 6)
         );
-        $collection = (new Collection($items))->nest('id', 'parent_id');
+        $collection = new Collection($items);
+        $collection = $collection->nest('id', 'parent_id');
         $expected = array(
             array(
                 'id' => 1,
@@ -1087,7 +1092,8 @@ class CollectionTest extends TestCase
             new ArrayObject(array('id' => 9, 'parent_id' => 6)),
             new ArrayObject(array('id' => 10, 'parent_id' => 6))
         );
-        $collection = (new Collection($items))->nest('id', 'parent_id');
+        $collection = new Collection($items);
+        $collection = $collection->nest('id', 'parent_id');
         $expected = array(
             new ArrayObject(array(
                 'id' => 1,
@@ -1147,7 +1153,8 @@ class CollectionTest extends TestCase
             new ArrayObject(array('id' => 9, 'parent_id' => 6)),
             new ArrayObject(array('id' => 10, 'parent_id' => 6))
         );
-        $collection = (new Collection($items))->nest('id', 'parent_id', 'nodes');
+        $collection = new Collection($items);
+        $collection = $collection->nest('id', 'parent_id', 'nodes');
         $expected = array(
             new ArrayObject(array(
                 'id' => 1,
@@ -1232,7 +1239,8 @@ class CollectionTest extends TestCase
         );
         $this->assertEquals(300, (new Collection($items))->sumOf('invoice.total'));
 
-        $sum = (new Collection($items))->sumOf(function ($v) {
+        $collection = new Collection($items);
+        $sum = $collection->sumOf(function ($v) {
             return $v['invoice']['total'] * 2;
         });
         $this->assertEquals(600, $sum);
@@ -1246,7 +1254,8 @@ class CollectionTest extends TestCase
     public function testStopWhenCallable()
     {
         $items = array(10, 20, 40, 10, 5);
-        $collection = (new Collection($items))->stopWhen(function ($v) {
+        $collection = new Collection($items);
+        $collection = $collection->stopWhen(function ($v) {
             return $v > 20;
         });
         $this->assertEquals(array(10, 20), $collection->toArray());
