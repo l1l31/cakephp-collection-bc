@@ -17,4 +17,4 @@ php:
 before_script:
   - composer install
 
-script: phpunit
+script: vendor/bin/phpunit
