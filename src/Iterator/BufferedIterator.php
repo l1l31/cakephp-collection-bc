@@ -138,10 +138,10 @@ class BufferedIterator extends Collection implements Countable, Serializable
         if ($valid) {
             $this->_current = parent::current();
             $this->_key = parent::key();
-            $this->_buffer->push([
+            $this->_buffer->push(array(
                 'key' => $this->_key,
                 'value' => $this->_current
-            ]);
+            ));
         }
 
         $this->_finished = !$valid;
@@ -204,7 +204,7 @@ class BufferedIterator extends Collection implements Countable, Serializable
      */
     public function unserialize($buffer)
     {
-        $this->__construct([]);
+        $this->__construct(array());
         $this->_buffer = unserialize($buffer);
         $this->_started = true;
         $this->_finished = true;

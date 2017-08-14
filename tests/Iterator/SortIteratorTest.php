@@ -31,7 +31,7 @@ class SortIteratorTest extends TestCase
      */
     public function testSortNumbersIdentity()
     {
-        $items = new ArrayObject([3, 5, 1, 2, 4]);
+        $items = new ArrayObject(array(3, 5, 1, 2, 4));
         $identity = function ($a) {
             return $a;
         };
@@ -51,7 +51,7 @@ class SortIteratorTest extends TestCase
      */
     public function testSortNumbersCustom()
     {
-        $items = new ArrayObject([3, 5, 1, 2, 4]);
+        $items = new ArrayObject(array(3, 5, 1, 2, 4));
         $callback = function ($a) {
             return $a * -1;
         };
@@ -71,31 +71,31 @@ class SortIteratorTest extends TestCase
      */
     public function testSortComplexNumeric()
     {
-        $items = new ArrayObject([
-            ['foo' => 1, 'bar' => 'a'],
-            ['foo' => 10, 'bar' => 'a'],
-            ['foo' => 2, 'bar' => 'a'],
-            ['foo' => 13, 'bar' => 'a'],
-        ]);
+        $items = new ArrayObject(array(
+            array('foo' => 1, 'bar' => 'a'),
+            array('foo' => 10, 'bar' => 'a'),
+            array('foo' => 2, 'bar' => 'a'),
+            array('foo' => 13, 'bar' => 'a'),
+        ));
         $callback = function ($a) {
             return $a['foo'];
         };
         $sorted = new SortIterator($items, $callback, SORT_DESC, SORT_NUMERIC);
-        $expected = [
-            ['foo' => 13, 'bar' => 'a'],
-            ['foo' => 10, 'bar' => 'a'],
-            ['foo' => 2, 'bar' => 'a'],
-            ['foo' => 1, 'bar' => 'a'],
-        ];
+        $expected = array(
+            array('foo' => 13, 'bar' => 'a'),
+            array('foo' => 10, 'bar' => 'a'),
+            array('foo' => 2, 'bar' => 'a'),
+            array('foo' => 1, 'bar' => 'a'),
+        );
         $this->assertEquals($expected, $sorted->toList());
 
         $sorted = new SortIterator($items, $callback, SORT_ASC, SORT_NUMERIC);
-        $expected = [
-            ['foo' => 1, 'bar' => 'a'],
-            ['foo' => 2, 'bar' => 'a'],
-            ['foo' => 10, 'bar' => 'a'],
-            ['foo' => 13, 'bar' => 'a'],
-        ];
+        $expected = array(
+            array('foo' => 1, 'bar' => 'a'),
+            array('foo' => 2, 'bar' => 'a'),
+            array('foo' => 10, 'bar' => 'a'),
+            array('foo' => 13, 'bar' => 'a'),
+        );
         $this->assertEquals($expected, $sorted->toList());
     }
 
@@ -106,31 +106,31 @@ class SortIteratorTest extends TestCase
      */
     public function testSortComplexNatural()
     {
-        $items = new ArrayObject([
-            ['foo' => 'foo_1', 'bar' => 'a'],
-            ['foo' => 'foo_10', 'bar' => 'a'],
-            ['foo' => 'foo_2', 'bar' => 'a'],
-            ['foo' => 'foo_13', 'bar' => 'a'],
-        ]);
+        $items = new ArrayObject(array(
+            array('foo' => 'foo_1', 'bar' => 'a'),
+            array('foo' => 'foo_10', 'bar' => 'a'),
+            array('foo' => 'foo_2', 'bar' => 'a'),
+            array('foo' => 'foo_13', 'bar' => 'a'),
+        ));
         $callback = function ($a) {
             return $a['foo'];
         };
         $sorted = new SortIterator($items, $callback, SORT_DESC, SORT_NATURAL);
-        $expected = [
-            ['foo' => 'foo_13', 'bar' => 'a'],
-            ['foo' => 'foo_10', 'bar' => 'a'],
-            ['foo' => 'foo_2', 'bar' => 'a'],
-            ['foo' => 'foo_1', 'bar' => 'a'],
-        ];
+        $expected = array(
+            array('foo' => 'foo_13', 'bar' => 'a'),
+            array('foo' => 'foo_10', 'bar' => 'a'),
+            array('foo' => 'foo_2', 'bar' => 'a'),
+            array('foo' => 'foo_1', 'bar' => 'a'),
+        );
         $this->assertEquals($expected, $sorted->toList());
 
         $sorted = new SortIterator($items, $callback, SORT_ASC, SORT_NATURAL);
-        $expected = [
-            ['foo' => 'foo_1', 'bar' => 'a'],
-            ['foo' => 'foo_2', 'bar' => 'a'],
-            ['foo' => 'foo_10', 'bar' => 'a'],
-            ['foo' => 'foo_13', 'bar' => 'a'],
-        ];
+        $expected = array(
+            array('foo' => 'foo_1', 'bar' => 'a'),
+            array('foo' => 'foo_2', 'bar' => 'a'),
+            array('foo' => 'foo_10', 'bar' => 'a'),
+            array('foo' => 'foo_13', 'bar' => 'a'),
+        );
         $this->assertEquals($expected, $sorted->toList());
         $this->assertEquals($expected, $sorted->toList(), 'Iterator should rewind');
     }
@@ -142,28 +142,28 @@ class SortIteratorTest extends TestCase
      */
     public function testSortComplexNaturalWithPath()
     {
-        $items = new ArrayObject([
-            ['foo' => 'foo_1', 'bar' => 'a'],
-            ['foo' => 'foo_10', 'bar' => 'a'],
-            ['foo' => 'foo_2', 'bar' => 'a'],
-            ['foo' => 'foo_13', 'bar' => 'a'],
-        ]);
+        $items = new ArrayObject(array(
+            array('foo' => 'foo_1', 'bar' => 'a'),
+            array('foo' => 'foo_10', 'bar' => 'a'),
+            array('foo' => 'foo_2', 'bar' => 'a'),
+            array('foo' => 'foo_13', 'bar' => 'a'),
+        ));
         $sorted = new SortIterator($items, 'foo', SORT_DESC, SORT_NATURAL);
-        $expected = [
-            ['foo' => 'foo_13', 'bar' => 'a'],
-            ['foo' => 'foo_10', 'bar' => 'a'],
-            ['foo' => 'foo_2', 'bar' => 'a'],
-            ['foo' => 'foo_1', 'bar' => 'a'],
-        ];
+        $expected = array(
+            array('foo' => 'foo_13', 'bar' => 'a'),
+            array('foo' => 'foo_10', 'bar' => 'a'),
+            array('foo' => 'foo_2', 'bar' => 'a'),
+            array('foo' => 'foo_1', 'bar' => 'a'),
+        );
         $this->assertEquals($expected, $sorted->toList());
 
         $sorted = new SortIterator($items, 'foo', SORT_ASC, SORT_NATURAL);
-        $expected = [
-            ['foo' => 'foo_1', 'bar' => 'a'],
-            ['foo' => 'foo_2', 'bar' => 'a'],
-            ['foo' => 'foo_10', 'bar' => 'a'],
-            ['foo' => 'foo_13', 'bar' => 'a'],
-        ];
+        $expected = array(
+            array('foo' => 'foo_1', 'bar' => 'a'),
+            array('foo' => 'foo_2', 'bar' => 'a'),
+            array('foo' => 'foo_10', 'bar' => 'a'),
+            array('foo' => 'foo_13', 'bar' => 'a'),
+        );
         $this->assertEquals($expected, $sorted->toList());
         $this->assertEquals($expected, $sorted->toList(), 'Iterator should rewind');
     }
@@ -175,19 +175,19 @@ class SortIteratorTest extends TestCase
      */
     public function testSortComplexDeepPath()
     {
-        $items = new ArrayObject([
-            ['foo' => ['bar' => 1], 'bar' => 'a'],
-            ['foo' => ['bar' => 12], 'bar' => 'a'],
-            ['foo' => ['bar' => 10], 'bar' => 'a'],
-            ['foo' => ['bar' => 2], 'bar' => 'a'],
-        ]);
+        $items = new ArrayObject(array(
+            array('foo' => array('bar' => 1), 'bar' => 'a'),
+            array('foo' => array('bar' => 12), 'bar' => 'a'),
+            array('foo' => array('bar' => 10), 'bar' => 'a'),
+            array('foo' => array('bar' => 2), 'bar' => 'a'),
+        ));
         $sorted = new SortIterator($items, 'foo.bar', SORT_ASC, SORT_NUMERIC);
-        $expected = [
-            ['foo' => ['bar' => 1], 'bar' => 'a'],
-            ['foo' => ['bar' => 2], 'bar' => 'a'],
-            ['foo' => ['bar' => 10], 'bar' => 'a'],
-            ['foo' => ['bar' => 12], 'bar' => 'a'],
-        ];
+        $expected = array(
+            array('foo' => array('bar' => 1), 'bar' => 'a'),
+            array('foo' => array('bar' => 2), 'bar' => 'a'),
+            array('foo' => array('bar' => 10), 'bar' => 'a'),
+            array('foo' => array('bar' => 12), 'bar' => 'a'),
+        );
         $this->assertEquals($expected, $sorted->toList());
     }
 
@@ -198,36 +198,36 @@ class SortIteratorTest extends TestCase
      */
     public function testSortDateTime()
     {
-        $items = new ArrayObject([
+        $items = new ArrayObject(array(
             new \DateTime('2014-07-21'),
             new \DateTime('2015-06-30'),
             new \DateTimeImmutable('2013-08-12')
-        ]);
+        ));
 
         $callback = function ($a) {
             return $a->add(new \DateInterval('P1Y'));
         };
         $sorted = new SortIterator($items, $callback);
-        $expected = [
+        $expected = array(
             new \DateTime('2016-06-30'),
             new \DateTime('2015-07-21'),
             new \DateTimeImmutable('2013-08-12')
 
-        ];
+        );
         $this->assertEquals($expected, $sorted->toList());
 
-        $items = new ArrayObject([
+        $items = new ArrayObject(array(
             new \DateTime('2014-07-21'),
             new \DateTime('2015-06-30'),
             new \DateTimeImmutable('2013-08-12')
-        ]);
+        ));
 
         $sorted = new SortIterator($items, $callback, SORT_ASC);
-        $expected = [
+        $expected = array(
             new \DateTimeImmutable('2013-08-12'),
             new \DateTime('2015-07-21'),
             new \DateTime('2016-06-30'),
-        ];
+        );
         $this->assertEquals($expected, $sorted->toList());
     }
 }

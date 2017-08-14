@@ -32,11 +32,11 @@ class BufferedIteratorTest extends TestCase
      */
     public function testBuffer()
     {
-        $items = new ArrayObject([
+        $items = new ArrayObject(array(
             'a' => 1,
             'b' => 2,
             'c' => 3
-        ]);
+        ));
         $iterator = new BufferedIterator($items);
         $expected = (array)$items;
         $this->assertSame($expected, $iterator->toArray());
@@ -53,11 +53,11 @@ class BufferedIteratorTest extends TestCase
      */
     public function testCount()
     {
-        $items = new ArrayObject([
+        $items = new ArrayObject(array(
             'a' => 1,
             'b' => 2,
             'c' => 3
-        ]);
+        ));
         $iterator = new BufferedIterator($items);
         $this->assertCount(3, $iterator);
         $buffered = $iterator->toArray();

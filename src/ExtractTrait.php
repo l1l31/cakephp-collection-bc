@@ -126,7 +126,7 @@ trait ExtractTrait
      */
     protected function _createMatcherFilter(array $conditions)
     {
-        $matchers = [];
+        $matchers = array();
         foreach ($conditions as $property => $value) {
             $extractor = $this->_propertyExtractor($property);
             $matchers[] = function ($v) use ($extractor, $value) {

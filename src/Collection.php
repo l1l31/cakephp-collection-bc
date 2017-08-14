@@ -94,8 +94,8 @@ class Collection extends IteratorIterator implements CollectionInterface, Serial
      */
     public function __debugInfo()
     {
-        return [
+        return array(
             'count' => iterator_count($this),
-        ];
+        );
     }
 }

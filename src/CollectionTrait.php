@@ -204,7 +204,7 @@ trait CollectionTrait
     public function groupBy($callback)
     {
         $callback = $this->_propertyExtractor($callback);
-        $group = [];
+        $group = array();
         foreach ($this as $value) {
             $group[$callback($value)][] = $value;
         }
@@ -218,7 +218,7 @@ trait CollectionTrait
     public function indexBy($callback)
     {
         $callback = $this->_propertyExtractor($callback);
-        $group = [];
+        $group = array();
         foreach ($this as $value) {
             $group[$callback($value)] = $value;
         }
@@ -359,11 +359,11 @@ trait CollectionTrait
      */
     public function combine($keyPath, $valuePath, $groupPath = null)
     {
-        $options = [
+        $options = array(
             'keyPath' => $this->_propertyExtractor($keyPath),
             'valuePath' => $this->_propertyExtractor($valuePath),
             'groupPath' => $groupPath ? $this->_propertyExtractor($groupPath) : null
-        ];
+        );
 
         $mapper = function ($value, $key, $mapReduce) use ($options) {
             $rowKey = $options['keyPath'];
@@ -377,13 +377,13 @@ trait CollectionTrait
 
             $key = $options['groupPath']($value, $key);
             $mapReduce->emitIntermediate(
-                [$rowKey($value, $key) => $rowVal($value, $key)],
+                array($rowKey($value, $key) => $rowVal($value, $key)),
                 $key
             );
         };
 
         $reducer = function ($values, $key, $mapReduce) {
-            $result = [];
+            $result = array();
             foreach ($values as $value) {
                 $result += $value;
             }
@@ -398,13 +398,13 @@ trait CollectionTrait
      */
     public function nest($idPath, $parentPath, $nestingKey = 'children')
     {
-        $parents = [];
+        $parents = array();
         $idPath = $this->_propertyExtractor($idPath);
         $parentPath = $this->_propertyExtractor($parentPath);
         $isObject = true;
 
         $mapper = function ($row, $key, $mapReduce) use (&$parents, $idPath, $parentPath, $nestingKey) {
-            $row[$nestingKey] = [];
+            $row[$nestingKey] = array();
             $id = $idPath($row, $key);
             $parentId = $parentPath($row, $key);
             $parents[$id] =& $row;
@@ -426,7 +426,7 @@ trait CollectionTrait
                 return null;
             }
 
-            $children = [];
+            $children = array();
             foreach ($values as $id) {
                 $children[] =& $parents[$id];
             }
@@ -511,11 +511,11 @@ trait CollectionTrait
     public function listNested($dir = 'desc', $nestingKey = 'children')
     {
         $dir = strtolower($dir);
-        $modes = [
+        $modes = array(
             'desc' => TreeIterator::SELF_FIRST,
             'asc' => TreeIterator::CHILD_FIRST,
             'leaves' => TreeIterator::LEAVES_ONLY
-        ];
+        );
 
         return new TreeIterator(
             new NestIterator($this, $nestingKey),
@@ -571,7 +571,7 @@ trait CollectionTrait
      */
     public function zip($items)
     {
-        return new ZipIterator(array_merge([$this], func_get_args()));
+        return new ZipIterator(array_merge(array($this), func_get_args()));
     }
 
     /**
@@ -583,10 +583,10 @@ trait CollectionTrait
             $items = func_get_args();
             $callable = array_pop($items);
         } else {
-            $items = [$items];
+            $items = array($items);
         }
 
-        return new ZipIterator(array_merge([$this], $items), $callable);
+        return new ZipIterator(array_merge(array($this), $items), $callable);
     }
 
     /**
@@ -595,7 +595,7 @@ trait CollectionTrait
     public function chunk($chunkSize)
     {
         return $this->map(function ($v, $k, $iterator) use ($chunkSize) {
-            $values = [$v];
+            $values = array($v);
             for ($i = 1; $i < $chunkSize; $i++) {
                 $iterator->next();
                 if (!$iterator->valid()) {
@@ -618,7 +618,7 @@ trait CollectionTrait
             if ($preserveKeys) {
                 $key = $k;
             }
-            $values = [$key => $v];
+            $values = array($key => $v);
             for ($i = 1; $i < $chunkSize; $i++) {
                 $iterator->next();
                 if (!$iterator->valid()) {
@@ -680,12 +680,12 @@ trait CollectionTrait
     public function cartesianProduct(callable $operation = null, callable $filter = null)
     {
         if ($this->isEmpty()) {
-            return new Collection([]);
+            return new Collection(array());
         }
 
-        $collectionArrays = [];
-        $collectionArraysKeys = [];
-        $collectionArraysCounts = [];
+        $collectionArrays = array();
+        $collectionArraysKeys = array();
+        $collectionArraysCounts = array();
 
         foreach ($this->toList() as $value) {
             $valueCount = count($value);
@@ -698,7 +698,7 @@ trait CollectionTrait
             $collectionArrays[] = $value;
         }
 
-        $result = [];
+        $result = array();
         $lastIndex = count($collectionArrays) - 1;
         // holds the indexes of the arrays that generate the current combination
         $currentIndexes = array_fill(0, $lastIndex + 1, 0);
@@ -734,7 +734,7 @@ trait CollectionTrait
     {
         $arrayValue = $this->toList();
         $length = count(current($arrayValue));
-        $result = [];
+        $result = array();
         foreach ($arrayValue as $column => $row) {
             if (count($row) != $length) {
                 throw new LogicException('Child arrays do not have even length');

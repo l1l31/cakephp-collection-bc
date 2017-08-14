@@ -30,9 +30,9 @@ class FilterIteratorTest extends TestCase
      */
     public function testFilter()
     {
-        $items = new \ArrayIterator([1, 2, 3]);
+        $items = new \ArrayIterator(array(1, 2, 3));
         $callable = $this->getMockBuilder(\StdClass::class)
-            ->setMethods(['__invoke'])
+            ->setMethods(array('__invoke'))
             ->getMock();
         $callable->expects($this->at(0))
             ->method('__invoke')
@@ -48,6 +48,6 @@ class FilterIteratorTest extends TestCase
             ->will($this->returnValue(false));
 
         $filter = new FilterIterator($items, $callable);
-        $this->assertEquals([1 => 2], iterator_to_array($filter));
+        $this->assertEquals(array(1 => 2), iterator_to_array($filter));
     }
 }

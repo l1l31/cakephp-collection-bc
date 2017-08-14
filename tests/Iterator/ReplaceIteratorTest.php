@@ -30,9 +30,9 @@ class ReplaceIteratorTest extends TestCase
      */
     public function testReplace()
     {
-        $items = new \ArrayIterator([1, 2, 3]);
+        $items = new \ArrayIterator(array(1, 2, 3));
         $callable = $this->getMockBuilder(\StdClass::class)
-            ->setMethods(['__invoke'])
+            ->setMethods(array('__invoke'))
             ->getMock();
         $callable->expects($this->at(0))
             ->method('__invoke')
@@ -48,6 +48,6 @@ class ReplaceIteratorTest extends TestCase
             ->will($this->returnValue(9));
 
         $map = new ReplaceIterator($items, $callable);
-        $this->assertEquals([1, 4, 9], iterator_to_array($map));
+        $this->assertEquals(array(1, 4, 9), iterator_to_array($map));
     }
 }

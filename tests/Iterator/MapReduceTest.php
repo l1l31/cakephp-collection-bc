@@ -31,11 +31,11 @@ class MapReduceTest extends TestCase
      */
     public function testInvertedIndexCreation()
     {
-        $data = [
+        $data = array(
             'document_1' => 'Dogs are the most amazing animal in history',
             'document_2' => 'History is not only amazing but boring',
             'document_3' => 'One thing that is not boring is dogs'
-        ];
+        );
         $mapper = function ($row, $document, $mr) {
             $words = array_map('strtolower', explode(' ', $row));
             foreach ($words as $word) {
@@ -46,24 +46,24 @@ class MapReduceTest extends TestCase
             $mr->emit(array_unique($documents), $word);
         };
         $results = new MapReduce(new ArrayIterator($data), $mapper, $reducer);
-        $expected = [
-            'dogs' => ['document_1', 'document_3'],
-            'are' => ['document_1'],
-            'the' => ['document_1'],
-            'most' => ['document_1'],
-            'amazing' => ['document_1', 'document_2'],
-            'animal' => ['document_1'],
-            'in' => ['document_1'],
-            'history' => ['document_1', 'document_2'],
-            'is' => ['document_2', 'document_3'],
-            'not' => ['document_2', 'document_3'],
-            'only' => ['document_2'],
-            'but' => ['document_2'],
-            'boring' => ['document_2', 'document_3'],
-            'one' => ['document_3'],
-            'thing' => ['document_3'],
-            'that' => ['document_3']
-        ];
+        $expected = array(
+            'dogs' => array('document_1', 'document_3'),
+            'are' => array('document_1'),
+            'the' => array('document_1'),
+            'most' => array('document_1'),
+            'amazing' => array('document_1', 'document_2'),
+            'animal' => array('document_1'),
+            'in' => array('document_1'),
+            'history' => array('document_1', 'document_2'),
+            'is' => array('document_2', 'document_3'),
+            'not' => array('document_2', 'document_3'),
+            'only' => array('document_2'),
+            'but' => array('document_2'),
+            'boring' => array('document_2', 'document_3'),
+            'one' => array('document_3'),
+            'thing' => array('document_3'),
+            'that' => array('document_3')
+        );
         $this->assertEquals($expected, iterator_to_array($results));
     }
 
@@ -74,14 +74,14 @@ class MapReduceTest extends TestCase
      */
     public function testEmitFinalInMapper()
     {
-        $data = ['a' => ['one', 'two'], 'b' => ['three', 'four']];
+        $data = array('a' => array('one', 'two'), 'b' => array('three', 'four'));
         $mapper = function ($row, $key, $mr) {
             foreach ($row as $number) {
                 $mr->emit($number);
             }
         };
         $results = new MapReduce(new ArrayIterator($data), $mapper);
-        $expected = ['one', 'two', 'three', 'four'];
+        $expected = array('one', 'two', 'three', 'four');
         $this->assertEquals($expected, iterator_to_array($results));
     }
 
@@ -93,7 +93,7 @@ class MapReduceTest extends TestCase
      */
     public function testReducerRequired()
     {
-        $data = ['a' => ['one', 'two'], 'b' => ['three', 'four']];
+        $data = array('a' => array('one', 'two'), 'b' => array('three', 'four'));
         $mapper = function ($row, $key, $mr) {
             foreach ($row as $number) {
                 $mr->emitIntermediate('a', $number);

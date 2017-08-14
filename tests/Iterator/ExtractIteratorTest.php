@@ -31,18 +31,18 @@ class ExtractIteratorTest extends TestCase
      */
     public function testExtractFromArrayShallow()
     {
-        $items = [
-            ['a' => 1, 'b' => 2],
-            ['a' => 3, 'b' => 4]
-        ];
+        $items = array(
+            array('a' => 1, 'b' => 2),
+            array('a' => 3, 'b' => 4)
+        );
         $extractor = new ExtractIterator($items, 'a');
-        $this->assertEquals([1, 3], iterator_to_array($extractor));
+        $this->assertEquals(array(1, 3), iterator_to_array($extractor));
 
         $extractor = new ExtractIterator($items, 'b');
-        $this->assertEquals([2, 4], iterator_to_array($extractor));
+        $this->assertEquals(array(2, 4), iterator_to_array($extractor));
 
         $extractor = new ExtractIterator($items, 'c');
-        $this->assertEquals([null, null], iterator_to_array($extractor));
+        $this->assertEquals(array(null, null), iterator_to_array($extractor));
     }
 
     /**
@@ -52,18 +52,18 @@ class ExtractIteratorTest extends TestCase
      */
     public function testExtractFromObjectShallow()
     {
-        $items = [
-            new ArrayObject(['a' => 1, 'b' => 2]),
-            new ArrayObject(['a' => 3, 'b' => 4])
-        ];
+        $items = array(
+            new ArrayObject(array('a' => 1, 'b' => 2)),
+            new ArrayObject(array('a' => 3, 'b' => 4))
+        );
         $extractor = new ExtractIterator($items, 'a');
-        $this->assertEquals([1, 3], iterator_to_array($extractor));
+        $this->assertEquals(array(1, 3), iterator_to_array($extractor));
 
         $extractor = new ExtractIterator($items, 'b');
-        $this->assertEquals([2, 4], iterator_to_array($extractor));
+        $this->assertEquals(array(2, 4), iterator_to_array($extractor));
 
         $extractor = new ExtractIterator($items, 'c');
-        $this->assertEquals([null, null], iterator_to_array($extractor));
+        $this->assertEquals(array(null, null), iterator_to_array($extractor));
     }
 
     /**
@@ -73,14 +73,14 @@ class ExtractIteratorTest extends TestCase
      */
     public function testExtractFromArrayDeep()
     {
-        $items = [
-            ['a' => ['b' => ['c' => 10]], 'b' => 2],
-            ['a' => ['b' => ['d' => 15]], 'b' => 4],
-            ['a' => ['x' => ['z' => 20]], 'b' => 4],
-            ['a' => ['b' => ['c' => 25]], 'b' => 2],
-        ];
+        $items = array(
+            array('a' => array('b' => array('c' => 10)), 'b' => 2),
+            array('a' => array('b' => array('d' => 15)), 'b' => 4),
+            array('a' => array('x' => array('z' => 20)), 'b' => 4),
+            array('a' => array('b' => array('c' => 25)), 'b' => 2),
+        );
         $extractor = new ExtractIterator($items, 'a.b.c');
-        $this->assertEquals([10, null, null, 25], iterator_to_array($extractor));
+        $this->assertEquals(array(10, null, null, 25), iterator_to_array($extractor));
     }
 
     /**
@@ -90,13 +90,13 @@ class ExtractIteratorTest extends TestCase
      */
     public function testExtractWithCallable()
     {
-        $items = [
-            ['a' => 1, 'b' => 2],
-            ['a' => 3, 'b' => 4]
-        ];
+        $items = array(
+            array('a' => 1, 'b' => 2),
+            array('a' => 3, 'b' => 4)
+        );
         $extractor = new ExtractIterator($items, function ($item) {
             return $item['b'];
         });
-        $this->assertEquals([2, 4], iterator_to_array($extractor));
+        $this->assertEquals(array(2, 4), iterator_to_array($extractor));
     }
 }

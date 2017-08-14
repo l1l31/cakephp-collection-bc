@@ -30,17 +30,17 @@ class InsertIteratorTest extends TestCase
      */
     public function testInsertSimplePath()
     {
-        $items = [
-            'a' => ['name' => 'Derp'],
-            'b' => ['name' => 'Derpina']
-        ];
-        $values = [20, 21];
+        $items = array(
+            'a' => array('name' => 'Derp'),
+            'b' => array('name' => 'Derpina')
+        );
+        $values = array(20, 21);
         $iterator = new InsertIterator($items, 'age', $values);
         $result = $iterator->toArray();
-        $expected = [
-            'a' => ['name' => 'Derp', 'age' => 20],
-            'b' => ['name' => 'Derpina', 'age' => 21]
-        ];
+        $expected = array(
+            'a' => array('name' => 'Derp', 'age' => 20),
+            'b' => array('name' => 'Derpina', 'age' => 21)
+        );
         $this->assertSame($expected, $result);
     }
 
@@ -51,17 +51,17 @@ class InsertIteratorTest extends TestCase
      */
     public function testInsertDeepPath()
     {
-        $items = [
-            'a' => ['name' => 'Derp', 'a' => ['deep' => ['thing' => 1]]],
-            'b' => ['name' => 'Derpina', 'a' => ['deep' => ['thing' => 2]]],
-        ];
-        $values = new \ArrayIterator([20, 21]);
+        $items = array(
+            'a' => array('name' => 'Derp', 'a' => array('deep' => array('thing' => 1))),
+            'b' => array('name' => 'Derpina', 'a' => array('deep' => array('thing' => 2))),
+        );
+        $values = new \ArrayIterator(array(20, 21));
         $iterator = new InsertIterator($items, 'a.deep.path', $values);
         $result = $iterator->toArray();
-        $expected = [
-            'a' => ['name' => 'Derp', 'a' => ['deep' => ['thing' => 1, 'path' => 20]]],
-            'b' => ['name' => 'Derpina', 'a' => ['deep' => ['thing' => 2, 'path' => 21]]],
-        ];
+        $expected = array(
+            'a' => array('name' => 'Derp', 'a' => array('deep' => array('thing' => 1, 'path' => 20))),
+            'b' => array('name' => 'Derpina', 'a' => array('deep' => array('thing' => 2, 'path' => 21))),
+        );
         $this->assertSame($expected, $result);
     }
 
@@ -72,17 +72,17 @@ class InsertIteratorTest extends TestCase
      */
     public function testInsertDeepPathMissingStep()
     {
-        $items = [
-            'a' => ['name' => 'Derp', 'a' => ['deep' => ['thing' => 1]]],
-            'b' => ['name' => 'Derpina', 'a' => ['nested' => 2]],
-        ];
-        $values = [20, 21];
+        $items = array(
+            'a' => array('name' => 'Derp', 'a' => array('deep' => array('thing' => 1))),
+            'b' => array('name' => 'Derpina', 'a' => array('nested' => 2)),
+        );
+        $values = array(20, 21);
         $iterator = new InsertIterator($items, 'a.deep.path', $values);
         $result = $iterator->toArray();
-        $expected = [
-            'a' => ['name' => 'Derp', 'a' => ['deep' => ['thing' => 1, 'path' => 20]]],
-            'b' => ['name' => 'Derpina', 'a' => ['nested' => 2]],
-        ];
+        $expected = array(
+            'a' => array('name' => 'Derp', 'a' => array('deep' => array('thing' => 1, 'path' => 20))),
+            'b' => array('name' => 'Derpina', 'a' => array('nested' => 2)),
+        );
         $this->assertSame($expected, $result);
     }
 
@@ -94,17 +94,17 @@ class InsertIteratorTest extends TestCase
      */
     public function testInsertTargetCountBigger()
     {
-        $items = [
-            'a' => ['name' => 'Derp'],
-            'b' => ['name' => 'Derpina']
-        ];
-        $values = [20];
+        $items = array(
+            'a' => array('name' => 'Derp'),
+            'b' => array('name' => 'Derpina')
+        );
+        $values = array(20);
         $iterator = new InsertIterator($items, 'age', $values);
         $result = $iterator->toArray();
-        $expected = [
-            'a' => ['name' => 'Derp', 'age' => 20],
-            'b' => ['name' => 'Derpina']
-        ];
+        $expected = array(
+            'a' => array('name' => 'Derp', 'age' => 20),
+            'b' => array('name' => 'Derpina')
+        );
         $this->assertSame($expected, $result);
     }
 
@@ -116,17 +116,17 @@ class InsertIteratorTest extends TestCase
      */
     public function testInsertSourceBigger()
     {
-        $items = [
-            'a' => ['name' => 'Derp'],
-            'b' => ['name' => 'Derpina']
-        ];
-        $values = [20, 21, 23];
+        $items = array(
+            'a' => array('name' => 'Derp'),
+            'b' => array('name' => 'Derpina')
+        );
+        $values = array(20, 21, 23);
         $iterator = new InsertIterator($items, 'age', $values);
         $result = $iterator->toArray();
-        $expected = [
-            'a' => ['name' => 'Derp', 'age' => 20],
-            'b' => ['name' => 'Derpina', 'age' => 21]
-        ];
+        $expected = array(
+            'a' => array('name' => 'Derp', 'age' => 20),
+            'b' => array('name' => 'Derpina', 'age' => 21)
+        );
         $this->assertSame($expected, $result);
     }
 
@@ -137,21 +137,21 @@ class InsertIteratorTest extends TestCase
      */
     public function testRewind()
     {
-        $items = [
-            'a' => ['name' => 'Derp'],
-            'b' => ['name' => 'Derpina'],
-        ];
-        $values = [20, 21];
+        $items = array(
+            'a' => array('name' => 'Derp'),
+            'b' => array('name' => 'Derpina'),
+        );
+        $values = array(20, 21);
         $iterator = new InsertIterator($items, 'age', $values);
         $iterator->next();
-        $this->assertEquals(['name' => 'Derpina', 'age' => 21], $iterator->current());
+        $this->assertEquals(array('name' => 'Derpina', 'age' => 21), $iterator->current());
         $iterator->rewind();
 
         $result = $iterator->toArray();
-        $expected = [
-            'a' => ['name' => 'Derp', 'age' => 20],
-            'b' => ['name' => 'Derpina', 'age' => 21]
-        ];
+        $expected = array(
+            'a' => array('name' => 'Derp', 'age' => 20),
+            'b' => array('name' => 'Derpina', 'age' => 21)
+        );
         $this->assertSame($expected, $result);
     }
 }

@@ -33,14 +33,14 @@ class MapReduce implements IteratorAggregate
      *
      * @var array
      */
-    protected $_intermediate = [];
+    protected $_intermediate = array();
 
     /**
      * Holds the results as emitted during the reduce phase
      *
      * @var array
      */
-    protected $_result = [];
+    protected $_result = array();
 
     /**
      * Whether the Map-Reduce routine has been executed already on the data
@@ -187,7 +187,7 @@ class MapReduce implements IteratorAggregate
         foreach ($this->_intermediate as $key => $list) {
             $reducer($list, $key, $this);
         }
-        $this->_intermediate = [];
+        $this->_intermediate = array();
         $this->_executed = true;
     }
 }

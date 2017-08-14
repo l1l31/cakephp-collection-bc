@@ -65,7 +65,7 @@ class SortIterator extends Collection
 
         $items = iterator_to_array($items, false);
         $callback = $this->_propertyExtractor($callback);
-        $results = [];
+        $results = array();
         foreach ($items as $key => $value) {
             $value = $callback($value);
             if ($value instanceof DateTimeInterface && $type === SORT_NUMERIC) {

@@ -2,10 +2,10 @@
 <?php
 
 /**
- * PHP 5.4 Short Array Syntax Converter
- *
- * Command-line script to convert PHP's "array()" syntax to PHP 5.4's
- * short array syntax "[]" using PHP's built-in tokenizer.
+ * PHP 5.4 Short Array Syntax Reverter
+ * 
+ * Command-line script to convert PHP 5.4's short array "[]" syntax
+ * to PHP 5.4's standard "array()" syntax using PHP's built-in tokenizer.
  * 
  * This script is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  * 
  * @link      https://github.com/thomasbachem/php-short-array-syntax-converter
- *
+ * 
  * @link      http://php.net/manual/en/language.types.array.php
  * 
  * @license   http://www.gnu.org/licenses/lgpl.html
@@ -36,7 +36,7 @@ $filePath = null;
 $saveFile = false;
 
 if ($argc > 3) {
-    file_put_contents('php://stderr', 'Usage: php convert.php [-w] <file>' . "\n");
+    file_put_contents('php://stderr', 'Usage: php revert.php [-w] <file>' . "\n");
     exit(1);
 }
 for ($i = 1; $i < $argc; ++$i) {
@@ -48,7 +48,7 @@ for ($i = 1; $i < $argc; ++$i) {
 }
 
 if (!$filePath) {
-    file_put_contents('php://stderr', 'Usage: php convert.php [-w] <file>' . "\n");
+    file_put_contents('php://stderr', 'Usage: php revert.php [-w] <file>' . "\n");
     exit(1);
 } elseif (!file_exists($filePath)) {
     file_put_contents('php://stderr', 'File "' . $filePath . '" not found.' . "\n");
@@ -70,50 +70,55 @@ for ($i = 0; $i < count($tokens); ++$i) {
     // Keep track of the current byte offset in the source code
     $offset += strlen(is_array($tokens[$i]) ? $tokens[$i][1] : $tokens[$i]);
 
-    // T_ARRAY could either mean the "array(...)" syntax we're looking for
-    // or a type hinting statement ("function(array $foo) { ... }")
-    if (is_array($tokens[$i]) && $tokens[$i][0] === T_ARRAY) {
-        // Look for a subsequent opening bracket ("(") to be sure we're actually
-        // looking at an "array(...)" statement
-        $isArraySyntax = false;
+    // "[" literal could either be an array index pointer
+    // or an array definition
+    if (is_string($tokens[$i]) && $tokens[$i] === '[') {
+        // Assume we're looking at an array definition by default
+        $isArraySyntax = true;
         $subOffset = $offset;
-        for ($j = $i + 1; $j < count($tokens); ++$j) {
-            $subOffset += strlen(is_array($tokens[$j]) ? $tokens[$j][1] : $tokens[$j]);
+        for ($j = $i - 1; $j > 0; --$j) {
+            $subOffset -= strlen(is_array($tokens[$j]) ? $tokens[$j][1] : $tokens[$j]);
 
-            if (is_string($tokens[$j]) && $tokens[$j] == '(') {
-                $isArraySyntax = true;
-                break;
-            } elseif (!is_array($tokens[$j]) || $tokens[$j][0] !== T_WHITESPACE) {
+            if (is_array($tokens[$j]) && $tokens[$j][0] === T_WHITESPACE) {
+                $subOffset += strlen($tokens[$j][1]);
+                continue;
+            // Look for a previous variable or function return
+            // to make sure we're not looking at an array pointer
+            } elseif (
+                (is_array($tokens[$j]) && ($tokens[$j][0] === T_VARIABLE || $tokens[$j][0] === T_STRING))
+                || in_array($tokens[$j], array(')', ']', '}'), true)
+            ) {
                 $isArraySyntax = false;
+                break;
+            } else {
                 break;
             }
         }
 
         if ($isArraySyntax) {
-            // Replace "array" and the opening bracket (including preceeding whitespace) with "["
+            // Replace "[" with "array("
             $replacements[] = array(
-                'start' => $offset - strlen($tokens[$i][1]),
-                'end' => $subOffset,
-                'string' => '[',
+                'start'  => $offset - strlen($tokens[$i]),
+                'end'    => $offset,
+                'string' => 'array(',
             );
 
-            // Look for matching closing bracket (")")
+            // Look for matching closing bracket ("]")
             $subOffset = $offset;
-            $openBracketsCount = 0;
+            $openBracketsCount = 1;
             for ($j = $i + 1; $j < count($tokens); ++$j) {
                 $subOffset += strlen(is_array($tokens[$j]) ? $tokens[$j][1] : $tokens[$j]);
 
-                if (is_string($tokens[$j]) && $tokens[$j] == '(') {
+                if (is_string($tokens[$j]) && $tokens[$j] == '[') {
                     ++$openBracketsCount;
-                } elseif (is_string($tokens[$j]) && $tokens[$j] == ')') {
+                } elseif (is_string($tokens[$j]) && $tokens[$j] == ']') {
                     --$openBracketsCount;
-
-                    if ($openBracketsCount == 0) {
-                        // Replace ")" with "]"
+                    if($openBracketsCount == 0) {
+                        // Replace "]" with ")"
                         $replacements[] = array(
-                            'start' => $subOffset - 1,
-                            'end' => $subOffset,
-                            'string' => ']',
+                            'start'  => $subOffset - 1,
+                            'end'    => $subOffset,
+                            'string' => ')',
                         );
                         break;
                     }
@@ -129,12 +134,7 @@ for ($i = 0; $i < count($tokens); ++$i) {
 // Apply the replacements to the source code
 $offsetChange = 0;
 foreach ($replacements as $replacement) {
-    $code = substr_replace(
-        $code,
-        $replacement['string'],
-        $replacement['start'] + $offsetChange,
-        $replacement['end'] - $replacement['start']
-    );
+    $code = substr_replace($code, $replacement['string'], $replacement['start'] + $offsetChange, $replacement['end'] - $replacement['start']);
     $offsetChange += strlen($replacement['string']) - ($replacement['end'] - $replacement['start']);
 }
 
