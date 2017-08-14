@@ -569,7 +569,8 @@ class CollectionTest extends TestCase
     public function testShuffle()
     {
         $data = array(1, 2, 3, 4);
-        $collection = (new Collection($data))->shuffle();
+        $collection = new Collection($data);
+        $collection->shuffle();
         $this->assertCount(count($data), iterator_to_array($collection));
 
         foreach ($collection as $value) {
@@ -585,7 +586,8 @@ class CollectionTest extends TestCase
     public function testSample()
     {
         $data = array(1, 2, 3, 4);
-        $collection = (new Collection($data))->sample(2);
+        $collection = new Collection($data);
+        $collection->sample(2);
         $this->assertCount(2, iterator_to_array($collection));
 
         foreach ($collection as $value) {
