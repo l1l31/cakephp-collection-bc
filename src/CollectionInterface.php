@@ -738,47 +738,6 @@ interface CollectionInterface extends Iterator, JsonSerializable
     public function buffered();
 
     /**
-     * Returns a new collection with each of the elements of this collection
-     * after flattening the tree structure. The tree structure is defined
-     * by nesting elements under a key with a known name. It is possible
-     * to specify such name by using the '$nestingKey' parameter.
-     *
-     * By default all elements in the tree following a Depth First Search
-     * will be returned, that is, elements from the top parent to the leaves
-     * for each branch.
-     *
-     * It is possible to return all elements from bottom to top using a Breadth First
-     * Search approach by passing the '$dir' parameter with 'asc'. That is, it will
-     * return all elements for the same tree depth first and from bottom to top.
-     *
-     * Finally, you can specify to only get a collection with the leaf nodes in the
-     * tree structure. You do so by passing 'leaves' in the first argument.
-     *
-     * The possible values for the first argument are aliases for the following
-     * constants and it is valid to pass those instead of the alias:
-     *
-     * - desc: TreeIterator::SELF_FIRST
-     * - asc: TreeIterator::CHILD_FIRST
-     * - leaves: TreeIterator::LEAVES_ONLY
-     *
-     * ### Example:
-     *
-     * ```
-     * $collection = new Collection([
-     *  ['id' => 1, 'children' => [['id' => 2, 'children' => [['id' => 3]]]]],
-     *  ['id' => 4, 'children' => [['id' => 5]]]
-     * ]);
-     * $flattenedIds = $collection->listNested()->extract('id'); // Yields [1, 2, 3, 4, 5]
-     * ```
-     *
-     * @param string|int $dir The direction in which to return the elements
-     * @param string|callable $nestingKey The key name under which children are nested
-     * or a callable function that will return the children list
-     * @return \Cake\Collection\CollectionInterface
-     */
-    public function listNested($dir = 'desc', $nestingKey = 'children');
-
-    /**
      * Creates a new collection that when iterated will stop yielding results if
      * the provided condition evaluates to false.
      *
@@ -866,44 +825,6 @@ interface CollectionInterface extends Iterator, JsonSerializable
      * @return \Cake\Collection\CollectionInterface
      */
     public function through(callable $handler);
-
-    /**
-     * Combines the elements of this collection with each of the elements of the
-     * passed iterables, using their positional index as a reference.
-     *
-     * ### Example:
-     *
-     * ```
-     * $collection = new Collection([1, 2]);
-     * $collection->zip([3, 4], [5, 6])->toList(); // returns [[1, 3, 5], [2, 4, 6]]
-     * ```
-     *
-     * @param array|\Traversable ...$items The collections to zip.
-     * @return \Cake\Collection\CollectionInterface
-     */
-    public function zip($items);
-
-    /**
-     * Combines the elements of this collection with each of the elements of the
-     * passed iterables, using their positional index as a reference.
-     *
-     * The resulting element will be the return value of the $callable function.
-     *
-     * ### Example:
-     *
-     * ```
-     * $collection = new Collection([1, 2]);
-     * $zipped = $collection->zipWith([3, 4], [5, 6], function (...$args) {
-     *   return array_sum($args);
-     * });
-     * $zipped->toList(); // returns [9, 12]; [(1 + 3 + 5), (2 + 4 + 6)]
-     * ```
-     *
-     * @param array|\Traversable ...$items The collections to zip.
-     * @param callable $callable The function to use for zipping the elements together.
-     * @return \Cake\Collection\CollectionInterface
-     */
-    public function zipWith($items, $callable);
 
     /**
      * Breaks the collection into smaller arrays of the given size.

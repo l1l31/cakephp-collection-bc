@@ -23,25 +23,6 @@ use Cake\Collection\CollectionTrait;
 use PHPUnit\Framework\TestCase;
 use NoRewindIterator;
 
-class TestCollection extends \IteratorIterator implements CollectionInterface
-{
-    use CollectionTrait;
-
-    public function __construct($items)
-    {
-        if (is_array($items)) {
-            $items = new \ArrayIterator($items);
-        }
-
-        if (!($items instanceof \Traversable)) {
-            $msg = 'Only an array or \Traversable is allowed for Collection';
-            throw new \InvalidArgumentException($msg);
-        }
-
-        parent::__construct($items);
-    }
-}
-
 /**
  * CollectionTest
  */
@@ -784,13 +765,6 @@ class CollectionTest extends TestCase
         $this->assertEquals(array(1, 2, 3, 4, 5, 6), $combined->toList());
     }
 
-    public function testAppendNotCollectionInstance()
-    {
-        $collection = new TestCollection(array(1, 2, 3));
-        $combined = $collection->append(array(4, 5, 6));
-        $this->assertEquals(array(1, 2, 3, 4, 5, 6), $combined->toList());
-    }
-
     /**
      * Tests that by calling compile internal iteration operations are not done
      * more than once
@@ -1244,62 +1218,6 @@ class CollectionTest extends TestCase
     }
 
     /**
-     * Tests the listNested method with the default 'children' nesting key
-     *
-     * @dataProvider nestedListProvider
-     * @return void
-     */
-    public function testListNested($dir, $expected)
-    {
-        $items = array(
-            array('id' => 1, 'parent_id' => null),
-            array('id' => 2, 'parent_id' => 1),
-            array('id' => 3, 'parent_id' => 2),
-            array('id' => 4, 'parent_id' => 2),
-            array('id' => 5, 'parent_id' => 3),
-            array('id' => 6, 'parent_id' => null),
-            array('id' => 7, 'parent_id' => 3),
-            array('id' => 8, 'parent_id' => 4),
-            array('id' => 9, 'parent_id' => 6),
-            array('id' => 10, 'parent_id' => 6)
-        );
-        $collection = (new Collection($items))->nest('id', 'parent_id')->listNested($dir);
-        $this->assertEquals($expected, $collection->extract('id')->toArray(false));
-    }
-
-    /**
-     * Tests using listNested with a different nesting key
-     *
-     * @return void
-     */
-    public function testListNestedCustomKey()
-    {
-        $items = array(
-            array('id' => 1, 'stuff' => array(array('id' => 2, 'stuff' => array(array('id' => 3))))),
-            array('id' => 4, 'stuff' => array(array('id' => 5)))
-        );
-        $collection = (new Collection($items))->listNested('desc', 'stuff');
-        $this->assertEquals(range(1, 5), $collection->extract('id')->toArray(false));
-    }
-
-    /**
-     * Tests flattening the collection using a custom callable function
-     *
-     * @return void
-     */
-    public function testListNestedWithCallable()
-    {
-        $items = array(
-            array('id' => 1, 'stuff' => array(array('id' => 2, 'stuff' => array(array('id' => 3))))),
-            array('id' => 4, 'stuff' => array(array('id' => 5)))
-        );
-        $collection = (new Collection($items))->listNested('desc', function ($item) {
-            return isset($item['stuff']) ? $item['stuff'] : array();
-        });
-        $this->assertEquals(range(1, 5), $collection->extract('id')->toArray(false));
-    }
-
-    /**
      * Tests the sumOf method
      *
      * @return void
@@ -1533,48 +1451,6 @@ class CollectionTest extends TestCase
     }
 
     /**
-     * Tests the zip() method
-     *
-     * @return void
-     */
-    public function testZip()
-    {
-        $collection = new Collection(array(1, 2));
-        $zipped = $collection->zip(array(3, 4));
-        $this->assertEquals(array(array(1, 3), array(2, 4)), $zipped->toList());
-
-        $collection = new Collection(array(1, 2));
-        $zipped = $collection->zip(array(3));
-        $this->assertEquals(array(array(1, 3)), $zipped->toList());
-
-        $collection = new Collection(array(1, 2));
-        $zipped = $collection->zip(array(3, 4), array(5, 6), array(7, 8), array(9, 10, 11));
-        $this->assertEquals(array(
-            array(1, 3, 5, 7, 9),
-            array(2, 4, 6, 8, 10)
-        ), $zipped->toList());
-    }
-
-    /**
-     * Tests the zipWith() method
-     *
-     * @return void
-     */
-    public function testZipWith()
-    {
-        $collection = new Collection(array(1, 2));
-        $zipped = $collection->zipWith(array(3, 4), function ($a, $b) {
-            return $a * $b;
-        });
-        $this->assertEquals(array(3, 8), $zipped->toList());
-
-        $zipped = $collection->zipWith(array(3, 4), array(5, 6, 7), function (...$args) {
-            return array_sum($args);
-        });
-        $this->assertEquals(array(9, 12), $zipped->toList());
-    }
-
-    /**
      * Tests the skip() method
      *
      * @return void
@@ -1730,20 +1606,6 @@ class CollectionTest extends TestCase
         $unserialized = unserialize($serialized);
         $this->assertEquals($collection->toList(), $unserialized->toList());
         $this->assertEquals($collection->toArray(), $unserialized->toArray());
-    }
-
-    /**
-     * Tests serializing a zip() call
-     *
-     * @return void
-     */
-    public function testSerializeWithZipIterator()
-    {
-        $collection = new Collection(array(4, 5));
-        $collection = $collection->zip(array(1, 2));
-        $serialized = serialize($collection);
-        $unserialized = unserialize($serialized);
-        $this->assertEquals($collection->toList(), $unserialized->toList());
     }
 
     /**
