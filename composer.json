@@ -1,6 +1,6 @@
 
 {
-    "name": "cakephp/collection-bc",
+    "name": "codeages/cakephp-collection-bc",
     "description": "Work easily with arrays and iterators by having a battery of utility traversal methods. ",
     "type": "library",
     "keywords": [
